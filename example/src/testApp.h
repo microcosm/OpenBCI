@@ -23,14 +23,20 @@ class testApp : public ofBaseApp{
         void initBuffers();
         void initBuffer(vector<float> *buffer);
         void createMovingGraphs();
+        void createTimeAxis();
         void generateRandomPoints();
+        void stretchPaddingAcross(int range, int numIntervals);
+        void resetPadding();
+        string toString(int i);
     
         float red, green, blue;
+        int targetFramerate;
     
         int eegMin, eegMax;
         string eegLabel;
-        int numChannels;
+        int numChannels, numSeconds;
         int bufferSize;
+        int charWidthPx;
         vector< vector<float> > buffers;
         vector< ofxUIMovingGraph* > eegGraphs;
     
