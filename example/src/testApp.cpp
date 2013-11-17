@@ -3,29 +3,28 @@
 //--------------------------------------------------------------
 void testApp::setup(){
     
-    min = 0;
-    max = 255;
-    bufferSize = 256;
-    gui = new ofxUICanvas(0, 0, 500, 300);
-    
-    vector<float> buffer;
-    for(int i = 0; i < bufferSize; i++)
-    {
-        buffer.push_back(0.0);
-    }
-    
-    movingGraph = (ofxUIMovingGraph *) gui->addWidgetDown(new ofxUIMovingGraph(255, 120, buffer, bufferSize, min, max, "MOVING GRAPH"));
-    
-    gui->addWidgetDown(new ofxUILabel("MOVING GRAPH", OFX_UI_FONT_MEDIUM));
-
+    //Init oF
     red = 233; blue = 52; green = 27;
 	ofBackground(red, green, blue, 255);
-     
+    
+    //Init values
+    eegMin = 0;
+    eegMax = 63;
+    eegLabel = "EEG CHANNELS";
+    numChannels = 8;
+    bufferSize = 256;
+    initBuffers();
+    
+    
+    //Create GUI
+    gui = new ofxUICanvas(0, 0, 500, 1000);
+    gui->addWidgetDown(new ofxUILabel(eegLabel, OFX_UI_FONT_MEDIUM));
+    createMovingGraphs();
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
-    movingGraph->addPoint((float)rand()/RAND_MAX*max);
+    generateRandomPoints();
 }
 
 //--------------------------------------------------------------
@@ -76,4 +75,32 @@ void testApp::gotMessage(ofMessage msg){
 //--------------------------------------------------------------
 void testApp::dragEvent(ofDragInfo dragInfo){ 
 
+}
+
+void testApp::initBuffers(){
+    for(int i = 0; i < numChannels; i++){
+        vector<float> buffer;
+        initBuffer(&buffer);
+        buffers.push_back(buffer);
+    }
+}
+
+void testApp::initBuffer(vector<float> *buffer){
+    for(int i = 0; i < bufferSize; i++){
+        buffer->push_back(0.0);
+    }
+}
+
+void testApp::createMovingGraphs(){
+    for(int i = 0; i < numChannels; i++){
+        ofxUIMovingGraph *movingGraph = new ofxUIMovingGraph(0, 0, bufferSize, eegMax, buffers[i], bufferSize, eegMin, eegMax, eegLabel);
+        gui->addWidgetDown(movingGraph);
+        eegGraphs.push_back(movingGraph);
+    }
+}
+
+void testApp::generateRandomPoints(){
+    for(int i = 0; i < numChannels; i++){
+        eegGraphs[i]->addPoint((float)rand()/RAND_MAX*(eegMax*0.2));
+    }
 }

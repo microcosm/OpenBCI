@@ -20,9 +20,19 @@ class testApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
     
-        ofxUICanvas *gui;
-        ofxUIMovingGraph *movingGraph;
+        void initBuffers();
+        void initBuffer(vector<float> *buffer);
+        void createMovingGraphs();
+        void generateRandomPoints();
+    
         float red, green, blue;
-        int min, max;
+    
+        int eegMin, eegMax;
+        string eegLabel;
+        int numChannels;
         int bufferSize;
+        vector< vector<float> > buffers;
+        vector< ofxUIMovingGraph* > eegGraphs;
+    
+        ofxUICanvas *gui;
 };
